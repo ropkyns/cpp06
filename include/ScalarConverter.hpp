@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ScalarConverter.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+        */
+/*   By: palu <palu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:15:10 by paulmart          #+#    #+#             */
-/*   Updated: 2025/05/19 16:25:42 by paulmart         ###   ########.fr       */
+/*   Updated: 2025/05/22 18:10:46 by palu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,12 @@ class ScalarConverter
 		~ScalarConverter();
 		ScalarConverter &operator= (const ScalarConverter &S);
 	public:
-		static void convert(std::string const &arg);
+		static void		convert(std::string const &arg);
+		static int		argType(std::string const &arg);
+		static void		charFunction(std::string const &arg);
+		static void		intFunction(std::string const &arg);
+		static void		floatFunction(std::string const &arg);
+		static void		doubleFunction(std::string const &arg);
 };
 
 

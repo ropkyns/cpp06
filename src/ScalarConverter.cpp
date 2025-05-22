@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ScalarConverter.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+        */
+/*   By: palu <palu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:14:57 by paulmart          #+#    #+#             */
-/*   Updated: 2025/05/21 17:10:27 by paulmart         ###   ########.fr       */
+/*   Updated: 2025/05/22 18:21:00 by palu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,19 @@ ScalarConverter &ScalarConverter::operator=(const ScalarConverter &S)
 	if (this == &S)
 		return (*this);
 	return(*this);
+}
+
+int	ScalarConverter::argType(std::string const &arg)
+{
+	if (arg.length() == 1 && !isdigit(arg[0]))
+		return (0);
+	else if (arg.find('f') == std::string::npos && arg.find('.') == std::string::npos)
+		return (1);
+	else if (arg.find('f') != std::string::npos)
+		return (2);
+	else if (arg.find('f') == std::string::npos && arg.find('.') != std::string::npos)
+		return (3);
+	else return (-1);
 }
 
 void	ScalarConverter::convert(const std::string &arg)
@@ -74,15 +87,7 @@ void	ScalarConverter::convert(const std::string &arg)
 	}
 }
 
-static int argType(const std::string arg)
+void	ScalarConverter::charFunction(std::string const &arg)
 {
-	if (arg.length() == 1 && !isdigit(arg[0]))
-		return (0);
-	else if (arg.find('f') == std::string::npos && arg.find('.') == std::string::npos)
-		return (1);
-	else if (arg.find('f') != std::string::npos)
-		return (2);
-	else if (arg.find('f') == std::string::npos && arg.find('.') != std::string::npos)
-		return (3);
-	else return (-1);
+	
 }
