@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ScalarConverter.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: palu <palu@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:15:10 by paulmart          #+#    #+#             */
-/*   Updated: 2025/05/22 18:10:46 by palu             ###   ########.fr       */
+/*   Updated: 2025/05/23 16:00:08 by paulmart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SCALARCONVERTER_HPP
-# define SCLARCONVERTER_HPP
+# define SCALARCONVERTER_HPP
 
 #include <iostream>
 #include <exception>
@@ -23,6 +23,14 @@
 #include <stdexcept>
 #include <iomanip>
 
+enum Type {
+	TYPE_CHAR,
+	TYPE_INT,
+	TYPE_FLOAT,
+	TYPE_DOUBLE,
+	TYPE_INVALID
+};
+
 class ScalarConverter
 {
 	private:
@@ -32,12 +40,6 @@ class ScalarConverter
 		ScalarConverter &operator= (const ScalarConverter &S);
 	public:
 		static void		convert(std::string const &arg);
-		static int		argType(std::string const &arg);
-		static void		charFunction(std::string const &arg);
-		static void		intFunction(std::string const &arg);
-		static void		floatFunction(std::string const &arg);
-		static void		doubleFunction(std::string const &arg);
 };
-
 
 #endif

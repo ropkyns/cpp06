@@ -1,0 +1,175 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ScalarConverter.cpp                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 16:14:57 by paulmart          #+#    #+#             */
+/*   Updated: 2025/05/23 17:03:22 by paulmart         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../include/ScalarConverter.hpp"
+
+int		argType(std::string const &arg);
+void	charConversion(std::string const &arg);
+void	intConversion(std::string const &arg);
+void	floatConversion(std::string const &arg);
+void	doubleConversion(std::string const &arg);
+
+
+ScalarConverter::ScalarConverter()
+{
+	std::cout << "ScalarConverter : Default constructor called" << std::endl;
+}
+
+ScalarConverter::ScalarConverter(const ScalarConverter &S)
+{
+	*this = S;
+	std::cout << "ScalarConverter : Copy constructor called" << std::endl;
+}
+
+ScalarConverter::~ScalarConverter()
+{
+	std::cout << "ScalarConverter : Destructor called" << std::endl;
+}
+
+ScalarConverter &ScalarConverter::operator=(const ScalarConverter &S)
+{
+	if (this == &S)
+		return (*this);
+	return(*this);
+}
+
+
+void	ScalarConverter::convert(const std::string &arg)
+{
+	if (arg.compare("-inf") == 0 || arg.compare("=inf") == 0 || arg.compare("inf") == 0 ||
+		arg.compare("nan") == 0 || arg.compare("nanf") == 0 ||
+		arg.compare("inff") == 0 || arg.compare("-inff") == 0 || arg.compare("+inff") == 0)
+	{
+		std::cout << "Char : impossible" << std::endl << "Int : impossible" << std::endl;
+		if (arg == "nan" || arg == "nanf")
+			std::cout << "Float : nanf" << std::endl << "Double : nan" << std::endl;
+		else if (arg == "inf" || arg == "+inf" || arg == "-inf")
+			std::cout << "Float : " << arg << "f" << std::endl << "Double : " << arg << std::endl;
+		else
+		{
+			std::cout << "Float : " << arg << std::endl;
+			std::cout << "Double : " << arg.substr(0, arg.length() - 1) << std::endl;
+		}
+		return ;
+	}
+	switch (argType(arg))
+	{
+		case TYPE_CHAR:
+			charConversion(arg);
+		break;
+		case TYPE_INT:
+			intConversion(arg);
+			break;
+		case TYPE_FLOAT:
+			floatConversion(arg);
+			break;
+		case TYPE_DOUBLE:
+			doubleConversion(arg);
+			break;
+		case TYPE_INVALID:
+			std::cout << "Invalid type, try only with a char, a int, a float or a double." << std::endl;
+			break;
+	}
+	return ;
+}
+
+bool	isInt(std::string const &arg)
+{
+	int i;
+	std::istringstream iss(arg);
+	iss >> std::noskipws >> i;
+	return (iss.eof() && !iss.fail());
+}
+
+bool	isFloat(std::string const &arg)
+{
+	if (arg.empty() || arg[arg.size() - 1] != 'f')
+		return (false);
+	std::istringstream iss(arg.substr(0, arg.size() - 1));
+	float f;
+	iss >> std::noskipws >> f;
+	return (iss.eof() && !iss.fail());
+}
+
+bool	isDouble(std::string const &arg)
+{
+	if (arg.empty() || arg[arg.length()] == 'f')
+		return (false);
+	std::istringstream iss(arg);
+	double d;
+	iss >> std::noskipws >> d;
+	return (iss.eof() && !iss.fail());
+}
+
+int	argType(std::string const &arg)
+{
+	if (arg.length() == 1 && !std::isdigit(arg[0]) && std::isprint(arg[0]))
+		return (TYPE_CHAR);
+	else if (isInt(arg) == true)
+		return (TYPE_INT);
+	else if (isFloat(arg) == true)
+		return (TYPE_FLOAT);
+	else if (isDouble(arg) == true)
+		return (TYPE_DOUBLE);
+	else 
+		return (TYPE_INVALID);
+}
+
+void	charConversion(std::string const &arg)
+{
+	std::cout << "Char : " << arg[0] << std::endl;
+	std::cout << "Int : " << static_cast<int>(arg[0]) << std::endl;
+	std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(arg[0]) << "f" << std::endl;
+	std::cout << "Double : " << std::fixed << std::setprecision(1) << static_cast<double>(arg[0]) << std::endl;
+}
+
+void	intConversion(std::string const &arg)
+{
+	int i = 0;
+	std::istringstream iss(arg);
+	iss >> std::noskipws >> i;
+	if (i >= 0 && i <= 255 && std::isprint(i))
+		std::cout << "Char : " << static_cast<char>(i) << std::endl;
+	else
+		std::cout << "Char : Impossible conversion" << std::endl;
+	std::cout << "Int : " << i << std::endl;
+	std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(i) << "f" << std::endl;
+	std::cout << "Double :" << std::fixed << std::setprecision(1) << static_cast<double>(i) << std::endl;
+}
+
+void	floatConversion(std::string const &arg)
+{
+	float f = 0.f;
+	std::istringstream iss(arg.substr(0, arg.size() - 1));
+	iss >> std::noskipws >> f;
+	if (f >= 0 && f <= 255 && std::isprint(f))
+		std::cout << "Char : " << static_cast<char>(f) << std::endl;
+	else
+		std::cout << "Char : Impossible conversion" << std::endl;
+	std::cout << "Int : " << static_cast<int>(f) << std::endl;
+	std::cout << "Float : " << std::fixed << std::setprecision(1) << f << "f" << std::endl;
+	std::cout << "Double : " << std::fixed << std::setprecision(1) << static_cast<double>(f) << std::endl;
+}
+
+void	doubleConversion(std::string const &arg)
+{
+	double d = 0.0;
+	std::istringstream iss(arg);
+	iss >> std::noskipws >> d;
+	if (d >= 0 && d <= 255 && std::isprint(d))
+		std::cout << "Char : " << static_cast<char>(d) << std::endl;
+	else
+		std::cout << "Char : Impossible conversion" << std::endl;
+	std::cout << "Int : " << static_cast<int>(d) << std::endl;
+	std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(d) << "f" << std::endl;
+	std::cout << "Double : " << std::fixed << std::setprecision(1) << d << std::endl;
+}
