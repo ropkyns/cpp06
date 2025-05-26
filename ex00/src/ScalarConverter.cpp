@@ -6,7 +6,7 @@
 /*   By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:14:57 by paulmart          #+#    #+#             */
-/*   Updated: 2025/05/23 17:03:22 by paulmart         ###   ########.fr       */
+/*   Updated: 2025/05/26 15:58:48 by paulmart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	ScalarConverter::convert(const std::string &arg)
 
 bool	isInt(std::string const &arg)
 {
-	int i;
+	long long i;
 	std::istringstream iss(arg);
 	iss >> std::noskipws >> i;
 	return (iss.eof() && !iss.fail());
@@ -102,7 +102,7 @@ bool	isFloat(std::string const &arg)
 
 bool	isDouble(std::string const &arg)
 {
-	if (arg.empty() || arg[arg.length()] == 'f')
+	if (arg.empty() || arg[arg.length()] == 'f' || arg.find('.') == arg.npos)
 		return (false);
 	std::istringstream iss(arg);
 	double d;
@@ -134,16 +134,21 @@ void	charConversion(std::string const &arg)
 
 void	intConversion(std::string const &arg)
 {
-	int i = 0;
+	long long i = 0;
 	std::istringstream iss(arg);
 	iss >> std::noskipws >> i;
-	if (i >= 0 && i <= 255 && std::isprint(i))
-		std::cout << "Char : " << static_cast<char>(i) << std::endl;
+	if (i >= INT_MIN && i <= INT_MAX)
+		{
+			if (i >= 0 && i <= 255 && std::isprint(i))
+				std::cout << "Char : " << static_cast<char>(i) << std::endl;
+			else
+				std::cout << "Char : Impossible conversion" << std::endl;
+			std::cout << "Int : " << i << std::endl;
+			std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(i) << "f" << std::endl;
+			std::cout << "Double :" << std::fixed << std::setprecision(1) << static_cast<double>(i) << std::endl;
+		}
 	else
-		std::cout << "Char : Impossible conversion" << std::endl;
-	std::cout << "Int : " << i << std::endl;
-	std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(i) << "f" << std::endl;
-	std::cout << "Double :" << std::fixed << std::setprecision(1) << static_cast<double>(i) << std::endl;
+		std::cerr << "Overflow, please try again" << std::endl;
 }
 
 void	floatConversion(std::string const &arg)
@@ -151,25 +156,43 @@ void	floatConversion(std::string const &arg)
 	float f = 0.f;
 	std::istringstream iss(arg.substr(0, arg.size() - 1));
 	iss >> std::noskipws >> f;
-	if (f >= 0 && f <= 255 && std::isprint(f))
-		std::cout << "Char : " << static_cast<char>(f) << std::endl;
+	if(f <= __FLT_MAX__ && f >= __FLT_MIN__)
+	{
+		if (f >= 0 && f <= 255 && std::isprint(f))
+			std::cout << "Char : " << static_cast<char>(f) << std::endl;
+		else
+			std::cout << "Char : Impossible conversion" << std::endl;
+		if (f <= std::numeric_limits<int>::max() && f >= std::numeric_limits<int>::min())
+			std::cout << "Int : " << static_cast<int>(f) << std::endl;
+		else
+			std::cout << "Int : out of range" << std::endl;
+		std::cout << "Float : " << std::fixed << std::setprecision(1) << f << "f" << std::endl;
+		std::cout << "Double : " << std::fixed << std::setprecision(1) << static_cast<double>(f) << std::endl;
+	}
 	else
-		std::cout << "Char : Impossible conversion" << std::endl;
-	std::cout << "Int : " << static_cast<int>(f) << std::endl;
-	std::cout << "Float : " << std::fixed << std::setprecision(1) << f << "f" << std::endl;
-	std::cout << "Double : " << std::fixed << std::setprecision(1) << static_cast<double>(f) << std::endl;
+		std::cerr << "Overflow, please try again" << std::endl;
 }
 
 void	doubleConversion(std::string const &arg)
 {
-	double d = 0.0;
+	double d = 0.;
 	std::istringstream iss(arg);
 	iss >> std::noskipws >> d;
-	if (d >= 0 && d <= 255 && std::isprint(d))
-		std::cout << "Char : " << static_cast<char>(d) << std::endl;
+	char* endptr = nullptr;
+	std::strtod(arg.c_str(), &endptr);
+	if (endptr != arg.c_str() && *endptr == '\0')
+	{
+		if (d >= 0 && d <= 255 && std::isprint(d))
+			std::cout << "Char : " << static_cast<char>(d) << std::endl;
+		else
+			std::cout << "Char : Impossible conversion" << std::endl;
+		if (d <= std::numeric_limits<int>::max() && d >= std::numeric_limits<int>::min())
+			std::cout << "Int : " << static_cast<int>(d) << std::endl;
+		else
+			std::cout << "Int : out of range" << std::endl;
+		std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(d) << "f" << std::endl;
+		std::cout << "Double : " << std::fixed << std::setprecision(1) << d << std::endl;
+	}
 	else
-		std::cout << "Char : Impossible conversion" << std::endl;
-	std::cout << "Int : " << static_cast<int>(d) << std::endl;
-	std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(d) << "f" << std::endl;
-	std::cout << "Double : " << std::fixed << std::setprecision(1) << d << std::endl;
+		std::cerr << "Overflow, please try again" << std::endl;
 }
