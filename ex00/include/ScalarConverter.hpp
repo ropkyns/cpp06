@@ -6,7 +6,7 @@
 /*   By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:15:10 by paulmart          #+#    #+#             */
-/*   Updated: 2025/05/26 15:15:02 by paulmart         ###   ########.fr       */
+/*   Updated: 2025/05/27 15:22:05 by paulmart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include <stdexcept>
 #include <iomanip>
 #include <limits>
+
 
 enum Type {
 	TYPE_CHAR,

@@ -6,7 +6,7 @@
 /*   By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:14:57 by paulmart          #+#    #+#             */
-/*   Updated: 2025/05/26 15:58:48 by paulmart         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:08:47 by paulmart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,13 @@ ScalarConverter &ScalarConverter::operator=(const ScalarConverter &S)
 	return(*this);
 }
 
-
 void	ScalarConverter::convert(const std::string &arg)
 {
-	if (arg.compare("-inf") == 0 || arg.compare("=inf") == 0 || arg.compare("inf") == 0 ||
+	if (arg.compare("-inf") == 0 || arg.compare("+inf") == 0 || arg.compare("inf") == 0 ||
 		arg.compare("nan") == 0 || arg.compare("nanf") == 0 ||
 		arg.compare("inff") == 0 || arg.compare("-inff") == 0 || arg.compare("+inff") == 0)
 	{
-		std::cout << "Char : impossible" << std::endl << "Int : impossible" << std::endl;
+		std::cerr << "Char : impossible" << std::endl << "Int : impossible" << std::endl;
 		if (arg == "nan" || arg == "nanf")
 			std::cout << "Float : nanf" << std::endl << "Double : nan" << std::endl;
 		else if (arg == "inf" || arg == "+inf" || arg == "-inf")
@@ -76,7 +75,7 @@ void	ScalarConverter::convert(const std::string &arg)
 			doubleConversion(arg);
 			break;
 		case TYPE_INVALID:
-			std::cout << "Invalid type, try only with a char, a int, a float or a double." << std::endl;
+			std::cerr << "Invalid type, try only with a char, a int, a float or a double." << std::endl;
 			break;
 	}
 	return ;
@@ -126,7 +125,7 @@ int	argType(std::string const &arg)
 
 void	charConversion(std::string const &arg)
 {
-	std::cout << "Char : " << arg[0] << std::endl;
+	std::cout << "Char : '" << arg[0] << "'" << std::endl;
 	std::cout << "Int : " << static_cast<int>(arg[0]) << std::endl;
 	std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(arg[0]) << "f" << std::endl;
 	std::cout << "Double : " << std::fixed << std::setprecision(1) << static_cast<double>(arg[0]) << std::endl;
@@ -138,17 +137,28 @@ void	intConversion(std::string const &arg)
 	std::istringstream iss(arg);
 	iss >> std::noskipws >> i;
 	if (i >= INT_MIN && i <= INT_MAX)
+	{
+		if (i >= 0 && i <= 255)
 		{
-			if (i >= 0 && i <= 255 && std::isprint(i))
-				std::cout << "Char : " << static_cast<char>(i) << std::endl;
+			if(std::isprint(static_cast<unsigned char>(i)))
+				std::cout << "Char : '" << static_cast<char>(i) << "'" << std::endl;
 			else
-				std::cout << "Char : Impossible conversion" << std::endl;
-			std::cout << "Int : " << i << std::endl;
-			std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(i) << "f" << std::endl;
-			std::cout << "Double :" << std::fixed << std::setprecision(1) << static_cast<double>(i) << std::endl;
+				std::cerr << "Char : Non displayable" << std::endl;
 		}
+		else
+			std::cerr << "Char : impossible" << std::endl;
+		std::cout << "Int : " << i << std::endl;
+		std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(i) << "f" << std::endl;
+		std::cout << "Double :" << std::fixed << std::setprecision(1) << static_cast<double>(i) << std::endl;
+	}
 	else
 		std::cerr << "Overflow, please try again" << std::endl;
+}
+
+bool floatFractionalPart(float value)
+{
+	float intpart;
+	return (std::modf(value, &intpart) != 0.0f);
 }
 
 void	floatConversion(std::string const &arg)
@@ -158,19 +168,38 @@ void	floatConversion(std::string const &arg)
 	iss >> std::noskipws >> f;
 	if(f <= __FLT_MAX__ && f >= __FLT_MIN__)
 	{
-		if (f >= 0 && f <= 255 && std::isprint(f))
-			std::cout << "Char : " << static_cast<char>(f) << std::endl;
+		if (f >= 0 && f <= 255 && floatFractionalPart(f) == false)
+		{
+			if(std::isprint(static_cast<unsigned char>(f)))
+				std::cout << "Char : '" << static_cast<char>(f) << "'" << std::endl;
+			else
+				std::cerr << "Char : Non displayable" << std::endl;
+		}
 		else
-			std::cout << "Char : Impossible conversion" << std::endl;
+			std::cerr << "Char : impossible" << std::endl;
 		if (f <= std::numeric_limits<int>::max() && f >= std::numeric_limits<int>::min())
 			std::cout << "Int : " << static_cast<int>(f) << std::endl;
 		else
-			std::cout << "Int : out of range" << std::endl;
-		std::cout << "Float : " << std::fixed << std::setprecision(1) << f << "f" << std::endl;
-		std::cout << "Double : " << std::fixed << std::setprecision(1) << static_cast<double>(f) << std::endl;
+			std::cerr << "Int : out of range" << std::endl;
+		if (floatFractionalPart(f))
+		{
+			std::cout << "Float : " << f << "f" << std::endl;
+			std::cout << "Double : " << static_cast<double>(f) << std::endl;
+		}
+		else
+		{
+			std::cout << "Float : " << std::fixed << std::setprecision(5) << f << "f" << std::endl;
+			std::cout << "Double : " << std::fixed << std::setprecision(5) << static_cast<double>(f) << std::endl;
+		}
 	}
 	else
 		std::cerr << "Overflow, please try again" << std::endl;
+}
+
+bool doubleFractionalPart(double value)
+{
+	double intpart;
+	return (std::modf(value, &intpart) != 0.0);
 }
 
 void	doubleConversion(std::string const &arg)
@@ -178,20 +207,33 @@ void	doubleConversion(std::string const &arg)
 	double d = 0.;
 	std::istringstream iss(arg);
 	iss >> std::noskipws >> d;
-	char* endptr = nullptr;
+	char* endptr = NULL;
 	std::strtod(arg.c_str(), &endptr);
 	if (endptr != arg.c_str() && *endptr == '\0')
 	{
-		if (d >= 0 && d <= 255 && std::isprint(d))
-			std::cout << "Char : " << static_cast<char>(d) << std::endl;
+		if (d >= 0 && d <= 255 && doubleFractionalPart(d) == false)
+		{
+			if(std::isprint(static_cast<unsigned char>(d)))
+				std::cout << "Char : '" << static_cast<char>(d) << "'" << std::endl;
+			else
+				std::cerr << "Char : Non displayable" << std::endl;
+		}
 		else
-			std::cout << "Char : Impossible conversion" << std::endl;
+			std::cerr << "Char : impossible" << std::endl;
 		if (d <= std::numeric_limits<int>::max() && d >= std::numeric_limits<int>::min())
 			std::cout << "Int : " << static_cast<int>(d) << std::endl;
 		else
-			std::cout << "Int : out of range" << std::endl;
-		std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(d) << "f" << std::endl;
-		std::cout << "Double : " << std::fixed << std::setprecision(1) << d << std::endl;
+			std::cerr << "Int : out of range" << std::endl;
+		if (doubleFractionalPart(d))
+		{
+			std::cout << "Float : "  << static_cast<float>(d) << "f" << std::endl;
+			std::cout << "Double : " << d << std::endl;
+		}
+		else
+		{
+			std::cout << "Float : " << std::fixed << std::setprecision(1) << static_cast<float>(d) << "f" << std::endl;
+			std::cout << "Double : " << std::fixed << std::setprecision(1) << d << std::endl;
+		}
 	}
 	else
 		std::cerr << "Overflow, please try again" << std::endl;

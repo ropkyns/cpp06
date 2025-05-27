@@ -6,11 +6,11 @@
 #    By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/25 13:45:09 by paulmart          #+#    #+#              #
-#    Updated: 2025/05/27 14:23:33 by paulmart         ###   ########.fr        #
+#    Updated: 2025/05/27 15:06:14 by paulmart         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = convert
+NAME = serialize
 
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -g3 -std=c++98 -I $(INCLUDE_DIR)
