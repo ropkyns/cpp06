@@ -6,11 +6,11 @@
 #    By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/25 13:45:09 by paulmart          #+#    #+#              #
-#    Updated: 2025/05/28 17:22:15 by paulmart         ###   ########.fr        #
+#    Updated: 2025/05/28 18:27:17 by paulmart         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = serialize
+NAME = identify
 
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -g3 -std=c++98 -I $(INCLUDE_DIR)
@@ -20,7 +20,10 @@ SRC_DIR = src/
 OBJ_DIR = obj
 
 SRC_FILES = \
-	Serializer.cpp\
+	Base.cpp\
+	A.cpp\
+	B.cpp\
+	C.cpp\
 	main.cpp
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 

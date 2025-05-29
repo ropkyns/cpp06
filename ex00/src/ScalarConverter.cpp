@@ -6,7 +6,7 @@
 /*   By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:14:57 by paulmart          #+#    #+#             */
-/*   Updated: 2025/05/27 16:08:47 by paulmart         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:47:29 by paulmart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ void	floatConversion(std::string const &arg)
 	float f = 0.f;
 	std::istringstream iss(arg.substr(0, arg.size() - 1));
 	iss >> std::noskipws >> f;
-	if(f <= __FLT_MAX__ && f >= __FLT_MIN__)
+	if(f <= __FLT_MAX__ && f >= -__FLT_MAX__)
 	{
 		if (f >= 0 && f <= 255 && floatFractionalPart(f) == false)
 		{
@@ -177,7 +177,7 @@ void	floatConversion(std::string const &arg)
 		}
 		else
 			std::cerr << "Char : impossible" << std::endl;
-		if (f <= std::numeric_limits<int>::max() && f >= std::numeric_limits<int>::min())
+		if (static_cast<long>(f) <= INT_MAX && static_cast<long>(f) >= INT_MIN)
 			std::cout << "Int : " << static_cast<int>(f) << std::endl;
 		else
 			std::cerr << "Int : out of range" << std::endl;
@@ -188,8 +188,8 @@ void	floatConversion(std::string const &arg)
 		}
 		else
 		{
-			std::cout << "Float : " << std::fixed << std::setprecision(5) << f << "f" << std::endl;
-			std::cout << "Double : " << std::fixed << std::setprecision(5) << static_cast<double>(f) << std::endl;
+			std::cout << "Float : " << std::fixed << std::setprecision(1) << f << "f" << std::endl;
+			std::cout << "Double : " << std::fixed << std::setprecision(1) << static_cast<double>(f) << std::endl;
 		}
 	}
 	else
@@ -220,7 +220,7 @@ void	doubleConversion(std::string const &arg)
 		}
 		else
 			std::cerr << "Char : impossible" << std::endl;
-		if (d <= std::numeric_limits<int>::max() && d >= std::numeric_limits<int>::min())
+		if (static_cast<long>(d) <= INT_MAX && static_cast<long>(d) >= INT_MIN)
 			std::cout << "Int : " << static_cast<int>(d) << std::endl;
 		else
 			std::cerr << "Int : out of range" << std::endl;
