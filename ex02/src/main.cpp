@@ -6,7 +6,7 @@
 /*   By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:53:49 by paulmart          #+#    #+#             */
-/*   Updated: 2025/05/28 18:31:08 by paulmart         ###   ########.fr       */
+/*   Updated: 2025/06/02 10:22:45 by paulmart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,25 +55,14 @@ static void	identify(Base *p)
 
 static void identify(Base &p)
 {
-	try {
-		(void)dynamic_cast<A &>(p);
+	if (dynamic_cast<A*>(&p))
 		std::cout << "Identify : this is a A class reference !" << std::endl;
-		return;
-	} catch (const std::bad_cast&) {}
-
-	try {
-		(void)dynamic_cast<B &>(p);
+	else if (dynamic_cast<B*>(&p))
 		std::cout << "Identify : this is a B class reference !" << std::endl;
-		return;
-	} catch (const std::bad_cast&) {}
-
-	try {
-		(void)dynamic_cast<C &>(p);
+	else if (dynamic_cast<C*>(&p))
 		std::cout << "Identify : this is a C class reference !" << std::endl;
-		return;
-	} catch (const std::bad_cast&) {}
-
-	std::cerr << "Identify : fail identifying class reference." << std::endl;
+	else
+		std::cerr << "Identify : fail identifying class reference." << std::endl;
 }
 
 int main()
@@ -87,6 +76,7 @@ int main()
 		identify(*base);
 		delete base;
 	}
+	std::cout << "\n\t--- Test fail ---" << std::endl;
 	Base *fail = NULL;
 	identify(*fail);
 	delete fail;
