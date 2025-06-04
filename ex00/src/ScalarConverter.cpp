@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ScalarConverter.cpp                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: paulmart <paulmart@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/19 16:14:57 by paulmart          #+#    #+#             */
-/*   Updated: 2025/05/28 13:47:29 by paulmart         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   ScalarConverter.cpp								:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: paulmart <paulmart@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2025/05/19 16:14:57 by paulmart		  #+#	#+#			 */
+/*   Updated: 2025/06/04 12:57:06 by paulmart		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "../include/ScalarConverter.hpp"
@@ -155,20 +155,27 @@ void	intConversion(std::string const &arg)
 		std::cerr << "Overflow, please try again" << std::endl;
 }
 
-bool floatFractionalPart(float value)
+bool hasNonZeroFractionFloat(const std::string& numPart)
 {
-	float intpart;
-	return (std::modf(value, &intpart) != 0.0f);
+	size_t dot = numPart.find('.');
+	if (dot == std::string::npos)
+		return false;
+	for (size_t i = dot + 1; i < numPart.size(); ++i) {
+		if (std::isdigit(numPart[i]) && numPart[i] != '0')
+			return true;
+	}
+	return false;
 }
 
 void	floatConversion(std::string const &arg)
 {
 	float f = 0.f;
-	std::istringstream iss(arg.substr(0, arg.size() - 1));
+	std::string numPart = arg.substr(0, arg.size() - 1);
+	std::istringstream iss(numPart);
 	iss >> std::noskipws >> f;
 	if(f <= __FLT_MAX__ && f >= -__FLT_MAX__)
 	{
-		if (f >= 0 && f <= 255 && floatFractionalPart(f) == false)
+		if (f >= 0 && f <= 255 && !hasNonZeroFractionFloat(numPart))
 		{
 			if(std::isprint(static_cast<unsigned char>(f)))
 				std::cout << "Char : '" << static_cast<char>(f) << "'" << std::endl;
@@ -181,7 +188,7 @@ void	floatConversion(std::string const &arg)
 			std::cout << "Int : " << static_cast<int>(f) << std::endl;
 		else
 			std::cerr << "Int : out of range" << std::endl;
-		if (floatFractionalPart(f))
+		if (hasNonZeroFractionFloat(numPart))
 		{
 			std::cout << "Float : " << f << "f" << std::endl;
 			std::cout << "Double : " << static_cast<double>(f) << std::endl;
@@ -196,10 +203,15 @@ void	floatConversion(std::string const &arg)
 		std::cerr << "Overflow, please try again" << std::endl;
 }
 
-bool doubleFractionalPart(double value)
-{
-	double intpart;
-	return (std::modf(value, &intpart) != 0.0);
+bool hasNonZeroFractionDouble(const std::string& numPart) {
+	size_t dot = numPart.find('.');
+	if (dot == std::string::npos)
+		return false;
+	for (size_t i = dot + 1; i < numPart.size(); ++i) {
+		if (std::isdigit(numPart[i]) && numPart[i] != '0')
+			return true;
+	}
+	return false;
 }
 
 void	doubleConversion(std::string const &arg)
@@ -207,11 +219,9 @@ void	doubleConversion(std::string const &arg)
 	double d = 0.;
 	std::istringstream iss(arg);
 	iss >> std::noskipws >> d;
-	char* endptr = NULL;
-	std::strtod(arg.c_str(), &endptr);
-	if (endptr != arg.c_str() && *endptr == '\0')
+	if (iss.eof() && !iss.fail())
 	{
-		if (d >= 0 && d <= 255 && doubleFractionalPart(d) == false)
+		if (d >= 0 && d <= 255 && !hasNonZeroFractionDouble(arg))
 		{
 			if(std::isprint(static_cast<unsigned char>(d)))
 				std::cout << "Char : '" << static_cast<char>(d) << "'" << std::endl;
@@ -224,7 +234,7 @@ void	doubleConversion(std::string const &arg)
 			std::cout << "Int : " << static_cast<int>(d) << std::endl;
 		else
 			std::cerr << "Int : out of range" << std::endl;
-		if (doubleFractionalPart(d))
+		if (hasNonZeroFractionDouble(arg))
 		{
 			std::cout << "Float : "  << static_cast<float>(d) << "f" << std::endl;
 			std::cout << "Double : " << d << std::endl;
